@@ -9,32 +9,22 @@ import {
   listConnectionRecords, saveConnectionRecord, deleteConnectionRecord,
 } from "@/lib/api";
 
-// Fixed field-mapping template per Mapping Type. Keys here are the only
-// keys the user can ever fill in -- add a new type by adding an entry here,
-// and it will automatically show up in the dropdown with its own fields.
 const DEFAULT_MAPPINGS: Record<string, Record<string, string>> = {
   "Account": { id: "", name: "", email: "", number: "", accountId: "" },
   "Deals": { id: "", name: "", accountId: "" },
   "ScheduleBooking": { id: "", dealId: "", subject: "", startDateTime: "" },
-  "WhatsAppMessage": { id: "", messageId: "", fromNumber: "", body: "", status: "", direction: "", timestamp: "" },
+  "WhatsAppMessage": {messageId: "", fromNumber: "", body: "", status: "", direction: "", timestamp: "" },
 };
-
-// Fallback if a type is missing from DEFAULT_MAPPINGS above -- keeps the
-// form from breaking instead of crashing.
 const FALLBACK_MAPPING: Record<string, string> = { id: "" };
-
 function getDefaultMapping(type?: string) {
   return (type && DEFAULT_MAPPINGS[type]) ?? FALLBACK_MAPPING;
 }
-
 const MAPPING_TYPES = Object.keys(DEFAULT_MAPPINGS) as ApiMappingType[];
 
 export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: ConnectionRecordKind }) {
   const mappings = kind === "salesforce-connect/api-mappings";
   const [records, setRecords] = useState<ConnectionRecord[]>([]);
   const [editing, setEditing] = useState<ConnectionRecord | null>(null);
-  // Keys are fixed per type -- the user can only edit values, never
-  // add/rename/remove a key (prevents typos like "id" -> "id111").
   const [mappingValues, setMappingValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -71,8 +61,6 @@ export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: 
     if (!editing) return;
     setError("");
     setNotice("");
-    // Keys always come from the fixed template -- mappingValues can't
-    // contain extra/renamed keys, so no JSON parsing/validation is needed.
     const fieldMapping: Record<string, unknown> = mappings ? { ...mappingValues } : {};
     setBusy(true);
     try {
@@ -137,9 +125,6 @@ export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: 
               </select></label>
               <div className="space-y-2">
                 <span>Field Mapping</span>
-                {/* Looks like a JSON object -- braces, quotes, colons, commas are
-                    plain text (fixed). Only the value after each colon is a real
-                    input, so keys can never be renamed/added/removed. */}
                 <div className="rounded-md border bg-muted p-3 font-mono text-sm leading-loose text-black">
                   <div>{"{"}</div>
                   {Object.keys(mappingValues).map((key, idx, arr) => (
