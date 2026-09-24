@@ -10,31 +10,26 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-} from "@/components/ui/sidebar"
-import {
-  BarChart3Icon,
-  LogOutIcon,
-  SettingsIcon,
-  UsersIcon,
-} from "lucide-react"
+} from '@/components/ui/sidebar';
+import { BarChart3Icon, LogOutIcon, SettingsIcon, UsersIcon } from 'lucide-react';
 
 const userNavItems = [
   {
-    title: "Dashboard",
-    href: "/",
+    title: 'Dashboard',
+    href: '/',
     icon: BarChart3Icon,
   },
   {
-    title: "Tenants",
-    href: "/tenant",
+    title: 'Tenants',
+    href: '/tenant',
     icon: UsersIcon,
   },
   {
-    title: "Setting",
-    href: "/settings",
+    title: 'Setting',
+    href: '/settings',
     icon: SettingsIcon,
   },
-]
+];
 
 export function UserSidebar() {
   return (
@@ -43,14 +38,12 @@ export function UserSidebar() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" tooltip="WhatsappBot AI">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md">
                 WB
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">WhatsappBot AI</span>
-                <span className="truncate text-xs text-sidebar-foreground/70">
-                  User Console
-                </span>
+                <span className="text-sidebar-foreground/70 truncate text-xs">User Console</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -63,10 +56,7 @@ export function UserSidebar() {
             <SidebarMenu>
               {userNavItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton
-                    render={<a href={item.href} />}
-                    tooltip={item.title}
-                  >
+                  <SidebarMenuButton render={<a href={item.href} />} tooltip={item.title}>
                     <item.icon />
                     <span>{item.title}</span>
                   </SidebarMenuButton>
@@ -92,5 +82,5 @@ export function UserSidebar() {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

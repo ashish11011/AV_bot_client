@@ -66,7 +66,7 @@ export default function TenantListPage() {
 
   async function handleDelete(tenant: Tenant) {
     const confirmed = window.confirm(
-      `${tenant.name} do you want to delete it? This action cannot be undone`,
+      `${tenant.name} do you want to delete it?? This action cannot be undone`,
     );
     if (!confirmed) return;
     setDeletingId(tenant.tenantId);
