@@ -4,17 +4,28 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   type ApiMappingType, type ConnectionRecord, type ConnectionRecordKind,
   listConnectionRecords, saveConnectionRecord, deleteConnectionRecord,
 } from "@/lib/api";
 
+const DEFAULT_MAPPINGS: Record<string, Record<string, string>> = {
+  "Account": { id: "", name: "", email: "", number: "", accountId: "" },
+  "Deals": { id: "", name: "", accountId: "" },
+  "ScheduleBooking": { id: "", dealId: "", subject: "", startDateTime: "" },
+  "WhatsAppMessage": {messageId: "", fromNumber: "", body: "", status: "", direction: "", timestamp: "" },
+};
+const FALLBACK_MAPPING: Record<string, string> = { id: "" };
+function getDefaultMapping(type?: string) {
+  return (type && DEFAULT_MAPPINGS[type]) ?? FALLBACK_MAPPING;
+}
+const MAPPING_TYPES = Object.keys(DEFAULT_MAPPINGS) as ApiMappingType[];
+
 export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: ConnectionRecordKind }) {
   const mappings = kind === "salesforce-connect/api-mappings";
   const [records, setRecords] = useState<ConnectionRecord[]>([]);
   const [editing, setEditing] = useState<ConnectionRecord | null>(null);
-  const [json, setJson] = useState("{}");
+  const [mappingValues, setMappingValues] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -32,7 +43,15 @@ export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: 
 
   function edit(record: ConnectionRecord) {
     setEditing({ ...record });
-    setJson(JSON.stringify(record.fieldMapping ?? {}, null, 2));
+    // Only pull values for keys this type is supposed to have. Stray/old
+    // keys from a previous save are dropped; missing keys default to "".
+    const template = getDefaultMapping(record.apiMappingType);
+    const saved = (record.fieldMapping ?? {}) as Record<string, unknown>;
+    const values: Record<string, string> = {};
+    for (const key of Object.keys(template)) {
+      values[key] = typeof saved[key] === "string" ? (saved[key] as string) : "";
+    }
+    setMappingValues(values);
     setError("");
     setNotice("");
   }
@@ -42,17 +61,7 @@ export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: 
     if (!editing) return;
     setError("");
     setNotice("");
-    let fieldMapping: Record<string, unknown> = {};
-    if (mappings) {
-      try {
-        const parsed: unknown = JSON.parse(json);
-        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error();
-        fieldMapping = parsed as Record<string, unknown>;
-      } catch {
-        setError('Field mapping must be a valid JSON object, for example: {"Name": "customerName"}');
-        return;
-      }
-    }
+    const fieldMapping: Record<string, unknown> = mappings ? { ...mappingValues } : {};
     setBusy(true);
     try {
       const body = mappings
@@ -97,17 +106,44 @@ export function ConnectionRecords({ tenantId, kind }: { tenantId: string; kind: 
               <Button variant="destructive" disabled={busy} onClick={() => remove(record)}>Delete</Button>
             </div>
           </div>)}
-          {!editing && <Button disabled={busy} onClick={() => edit({ id: "", apiMappingType: "Account", numberId: "", phoneNumber: "", apiEndpoint: "" })}>Add {mappings ? "API Mapping" : "WhatsApp Number"}</Button>}
+          {!editing && <Button disabled={busy} onClick={() => {
+            setEditing({ id: "", apiMappingType: "Account", numberId: "", phoneNumber: "", apiEndpoint: "" });
+            setMappingValues({ ...getDefaultMapping("Account") });
+          }}>Add {mappings ? "API Mapping" : "WhatsApp Number"}</Button>}
         </>}
         {editing && <form onSubmit={save} className="space-y-4 rounded-md border p-4">
           <h3 className="font-medium">{editing.id ? "Edit" : "Add"} {mappings ? "API Mapping" : "WhatsApp Number"}</h3>
           <fieldset disabled={busy} className="space-y-4">
             {mappings ? <>
               <label className="block space-y-2"><span>API Endpoint</span><Input required maxLength={255} value={editing.apiEndpoint ?? ""} onChange={e => setEditing({ ...editing, apiEndpoint: e.target.value })} /></label>
-              <label className="block space-y-2"><span>Mapping Type</span><select className="block w-full rounded-md border bg-background p-2" value={editing.apiMappingType} onChange={e => setEditing({ ...editing, apiMappingType: e.target.value as ApiMappingType })}>
-                {["Account", "Deals", "ScheduleBooking"].map(type => <option key={type} value={type}>{type}</option>)}
+              <label className="block space-y-2"><span>Mapping Type</span><select className="block w-full rounded-md border bg-background p-2" value={editing.apiMappingType} onChange={e => {
+                const type = e.target.value as ApiMappingType;
+                setEditing({ ...editing, apiMappingType: type });
+                if (!editing.id) setMappingValues({ ...getDefaultMapping(type) });
+              }}>
+                {MAPPING_TYPES.map(type => <option key={type} value={type}>{type}</option>)}
               </select></label>
-              <label className="block space-y-2"><span>Field Mapping (JSON object)</span><Textarea required rows={10} spellCheck={false} className="font-mono" value={json} onChange={e => setJson(e.target.value)} /></label>
+              <div className="space-y-2">
+                <span>Field Mapping</span>
+                <div className="rounded-md border bg-muted p-3 font-mono text-sm leading-loose text-black">
+                  <div>{"{"}</div>
+                  {Object.keys(mappingValues).map((key, idx, arr) => (
+                    <div key={key} className="pl-4">
+                      <span>&quot;{key}&quot;</span>
+                      <span>: &quot;</span>
+                      <input
+                        required
+                        value={mappingValues[key]}
+                        onChange={e => setMappingValues({ ...mappingValues, [key]: e.target.value })}
+                        style={{ width: mappingValues[key] ? `${mappingValues[key].length}ch` : "2px" }}
+                        className="inline-block appearance-none border-none bg-transparent p-0 m-0 font-mono text-sm text-black outline-none"
+                      />
+                      <span>&quot;{idx < arr.length - 1 ? "," : ""}</span>
+                    </div>
+                  ))}
+                  <div>{"}"}</div>
+                </div>
+              </div>
             </> : <>
               <label className="block space-y-2"><span>Number ID</span><Input required maxLength={512} value={editing.numberId ?? ""} onChange={e => setEditing({ ...editing, numberId: e.target.value })} /></label>
               <label className="block space-y-2"><span>Phone Number</span><Input required type="tel" maxLength={512} value={editing.phoneNumber ?? ""} onChange={e => setEditing({ ...editing, phoneNumber: e.target.value })} /></label>
