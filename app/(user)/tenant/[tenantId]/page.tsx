@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import {
   CopyIcon,
   KeyRoundIcon,
@@ -9,22 +9,12 @@ import {
   PencilIcon,
   PlugIcon,
   RefreshCcwIcon,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Toast, ToastState } from "@/components/notification-toast";
-import {
-  generateTenantBearerToken,
-  getTenant,
-  type Tenant,
-} from "@/lib/api";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Toast, ToastState } from '@/components/notification-toast';
+import { generateTenantBearerToken, getTenant, type Tenant } from '@/lib/api';
 
 export default function TenantDetailPage() {
   const { tenantId } = useParams<{ tenantId: string }>();
@@ -42,15 +32,15 @@ export default function TenantDetailPage() {
 
     try {
       await navigator.clipboard.writeText(tenant.bearerToken);
-      setToast({ message: "Bearer token copied", type: "success" });
+      setToast({ message: 'Bearer token copied', type: 'success' });
     } catch {
-      setToast({ message: "Failed to copy bearer token", type: "error" });
+      setToast({ message: 'Failed to copy bearer token', type: 'error' });
     }
   }
 
   async function handleGenerateBearerToken() {
     const confirmed = window.confirm(
-      "Generate a new bearer token? The old token will stop working immediately."
+      'Generate a new bearer token? The old token will stop working immediately.',
     );
 
     if (!confirmed) return;
@@ -60,25 +50,25 @@ export default function TenantDetailPage() {
     try {
       const res = await generateTenantBearerToken(tenantId);
       setTenant(res.data);
-      setToast({ message: "Bearer token generated and saved", type: "success" });
+      setToast({ message: 'Bearer token generated and saved', type: 'success' });
     } catch (err) {
       setToast({
-        message: err instanceof Error ? err.message : "Failed to generate bearer token",
-        type: "error",
+        message: err instanceof Error ? err.message : 'Failed to generate bearer token',
+        type: 'error',
       });
     } finally {
       setGenerating(false);
     }
   }
 
-  if (!tenant) return <p className="text-sm text-muted-foreground">Loading...</p>;
+  if (!tenant) return <p className="text-muted-foreground text-sm">Loading...</p>;
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold">{tenant.name}</h1>
-          <p className="text-sm text-muted-foreground">{tenant.email}</p>
+          <p className="text-muted-foreground text-sm">{tenant.email}</p>
         </div>
         <Button variant="outline" onClick={() => router.push(`/tenant/${tenantId}/edit`)}>
           <PencilIcon /> Edit
@@ -90,12 +80,10 @@ export default function TenantDetailPage() {
           <CardTitle className="flex items-center gap-2">
             <KeyRoundIcon className="size-4" /> Bearer Token
           </CardTitle>
-          <CardDescription>
-            View, copy, or generate a new token for this tenant.
-          </CardDescription>
+          <CardDescription>View, copy, or generate a new token for this tenant.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <div className="rounded-md border bg-muted/40 p-3 font-mono text-sm break-all">
+          <div className="bg-muted/40 rounded-md border p-3 font-mono text-sm break-all">
             {tenant.bearerToken}
           </div>
           <div className="flex flex-wrap gap-2">
@@ -103,13 +91,9 @@ export default function TenantDetailPage() {
               <CopyIcon />
               Copy
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleGenerateBearerToken}
-              disabled={generating}
-            >
+            <Button variant="outline" onClick={handleGenerateBearerToken} disabled={generating}>
               <RefreshCcwIcon />
-              {generating ? "Generating..." : "Generate New Token"}
+              {generating ? 'Generating...' : 'Generate New Token'}
             </Button>
           </div>
         </CardContent>

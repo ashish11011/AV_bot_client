@@ -1,26 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { ConnectionRecords } from "@/components/connection-records";
-import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { ConnectionRecords } from '@/components/connection-records';
+import { PlusIcon } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Toast, ToastState } from "@/components/notification-toast";
-import { TenantBreadcrumb } from "@/components/tenant-breadcrumb";
-import {
-  getWhatsappConnect,
-  saveWhatsappConnect,
-  deleteWhatsappConnect,
-} from "@/lib/api";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Toast, ToastState } from '@/components/notification-toast';
+import { TenantBreadcrumb } from '@/components/tenant-breadcrumb';
+import { getWhatsappConnect, saveWhatsappConnect, deleteWhatsappConnect } from '@/lib/api';
 
 type FormState = {
   businessAccountId: string;
@@ -30,10 +21,10 @@ type FormState = {
 };
 
 const emptyForm: FormState = {
-  businessAccountId: "",
-  apiVersion: "",
-  accessToken: "",
-  encryptedToken: "",
+  businessAccountId: '',
+  apiVersion: '',
+  accessToken: '',
+  encryptedToken: '',
 };
 
 export default function WhatsappConnectPage() {
@@ -53,11 +44,10 @@ export default function WhatsappConnectPage() {
       .then((res) => {
         if (res.data) {
           setForm({
-            businessAccountId:
-              res.data.businessAccountId ?? "",
-            apiVersion: res.data.apiVersion ?? "",
-            accessToken: res.data.accessToken ?? "",
-            encryptedToken: res.data.encryptedToken ?? "",
+            businessAccountId: res.data.businessAccountId ?? '',
+            apiVersion: res.data.apiVersion ?? '',
+            accessToken: res.data.accessToken ?? '',
+            encryptedToken: res.data.encryptedToken ?? '',
           });
           setHasData(true);
         }
@@ -94,21 +84,16 @@ export default function WhatsappConnectPage() {
       setShowForm(false);
 
       setToast({
-        message: isAdding
-          ? "WhatsApp connect added"
-          : "WhatsApp connect updated",
-        type: "success",
+        message: isAdding ? 'WhatsApp connect added' : 'WhatsApp connect updated',
+        type: 'success',
       });
 
       setSaving(false);
       setDeleting(false);
     } catch (err) {
       setToast({
-        message:
-          err instanceof Error
-            ? err.message
-            : "Failed to save WhatsApp connect",
-        type: "error",
+        message: err instanceof Error ? err.message : 'Failed to save WhatsApp connect',
+        type: 'error',
       });
       setSaving(false);
     }
@@ -116,7 +101,7 @@ export default function WhatsappConnectPage() {
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      "Do you want to delete WhatsApp connect? This action cannot be undone."
+      'Do you want to delete WhatsApp connect? This action cannot be undone.',
     );
 
     if (!confirmed) return;
@@ -130,30 +115,23 @@ export default function WhatsappConnectPage() {
       setForm(emptyForm);
 
       setToast({
-        message: "WhatsApp connect deleted",
-        type: "success",
+        message: 'WhatsApp connect deleted',
+        type: 'success',
       });
 
       setSaving(false);
       setDeleting(false);
     } catch (err) {
       setToast({
-        message:
-          err instanceof Error
-            ? err.message
-            : "Failed to delete WhatsApp connect",
-        type: "error",
+        message: err instanceof Error ? err.message : 'Failed to delete WhatsApp connect',
+        type: 'error',
       });
       setDeleting(false);
     }
   }
 
   if (!loaded) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Loading...
-      </p>
-    );
+    return <p className="text-muted-foreground text-sm">Loading...</p>;
   }
 
   const fields: {
@@ -162,36 +140,31 @@ export default function WhatsappConnectPage() {
     type?: string;
   }[] = [
     {
-      key: "businessAccountId",
-      label: "Business Account ID",
+      key: 'businessAccountId',
+      label: 'Business Account ID',
     },
     {
-      key: "apiVersion",
-      label: "API Version",
+      key: 'apiVersion',
+      label: 'API Version',
     },
     {
-      key: "accessToken",
-      label: "Access Token",
-      type: "password",
+      key: 'accessToken',
+      label: 'Access Token',
+      type: 'password',
     },
     {
-      key: "encryptedToken",
-      label: "Encrypted Token",
-      type: "password",
+      key: 'encryptedToken',
+      label: 'Encrypted Token',
+      type: 'password',
     },
   ];
 
   return (
     <div className="flex flex-col gap-4">
-      <TenantBreadcrumb
-        currentPage="WhatsApp Connect"
-        tenantId={tenantId}
-      />
+      <TenantBreadcrumb currentPage="WhatsApp Connect" tenantId={tenantId} />
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">
-          WhatsApp Connect
-        </h1>
+        <h1 className="text-2xl font-semibold">WhatsApp Connect</h1>
 
         {!showForm && !hasData && (
           <Button onClick={handleAdd}>
@@ -206,9 +179,9 @@ export default function WhatsappConnectPage() {
           <CardTitle>
             {showForm
               ? isAdding
-                ? "Add WhatsApp Connect"
-                : "Edit WhatsApp Connect"
-              : "WhatsApp Connect"}
+                ? 'Add WhatsApp Connect'
+                : 'Edit WhatsApp Connect'
+              : 'WhatsApp Connect'}
           </CardTitle>
         </CardHeader>
 
@@ -217,39 +190,26 @@ export default function WhatsappConnectPage() {
             <div className="flex gap-2">
               <Button onClick={handleEdit}>Edit</Button>
 
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? "Deleting..." : "Delete"}
+              <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                {deleting ? 'Deleting...' : 'Delete'}
               </Button>
             </div>
           )}
 
           {!showForm && !hasData && (
-            <p className="text-sm text-muted-foreground">
-              No WhatsApp connection configured.
-            </p>
+            <p className="text-muted-foreground text-sm">No WhatsApp connection configured.</p>
           )}
 
           {showForm && (
-            <form
-              onSubmit={handleSave}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleSave} className="flex flex-col gap-4">
               {fields.map((field) => (
                 <div key={field.key}>
-                  <Label className="mb-2">
-                    {field.label}
-                  </Label>
+                  <Label className="mb-2">{field.label}</Label>
 
                   <Input
-                    type={field.type ?? "text"}
+                    type={field.type ?? 'text'}
                     value={form[field.key]}
-                    onChange={(e) =>
-                      handleChange(field.key, e.target.value)
-                    }
+                    onChange={(e) => handleChange(field.key, e.target.value)}
                     required
                   />
                 </div>
@@ -257,11 +217,7 @@ export default function WhatsappConnectPage() {
 
               <div className="flex gap-2">
                 <Button type="submit" disabled={saving}>
-                  {saving
-                    ? "Saving..."
-                    : isAdding
-                      ? "Add"
-                      : "Update"}
+                  {saving ? 'Saving...' : isAdding ? 'Add' : 'Update'}
                 </Button>
 
                 <Button
@@ -278,12 +234,11 @@ export default function WhatsappConnectPage() {
         </CardContent>
       </Card>
 
-      {hasData && <ConnectionRecords key={tenantId} tenantId={tenantId} kind="whatsapp-connect/numbers" />}
+      {hasData && (
+        <ConnectionRecords key={tenantId} tenantId={tenantId} kind="whatsapp-connect/numbers" />
+      )}
 
-      <Toast
-        toast={toast}
-        onClose={() => setToast(null)}
-      />
+      <Toast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }
