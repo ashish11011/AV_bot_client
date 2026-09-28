@@ -1,10 +1,10 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { NEXT_PUBLIC_API_BASE_URL } from "@/lib/env";
+import axios, { AxiosRequestConfig } from 'axios';
+import { NEXT_PUBLIC_API_BASE_URL } from '@/lib/env';
 
 const client = axios.create({
   baseURL: NEXT_PUBLIC_API_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -14,7 +14,7 @@ async function request<T>(path: string, config?: AxiosRequestConfig): Promise<T>
     return res.data;
   } catch (err) {
     if (axios.isAxiosError(err)) {
-      const msg = err.response?.data?.msg ?? err.message ?? "Request failed";
+      const msg = err.response?.data?.msg ?? err.message ?? 'Request failed';
       throw new Error(msg);
     }
     throw err;
@@ -55,7 +55,7 @@ export type WhatsappConnect = {
 
 // Tenants
 export function listTenants() {
-  return request<{ data: Tenant[] }>("/tenants");
+  return request<{ data: Tenant[] }>('/tenants');
 }
 
 export function getTenant(tenantId: string) {
@@ -68,81 +68,71 @@ export function createTenant(body: {
   phone?: string;
   email: string;
 }) {
-  return request<{ data: Tenant }>("/tenants", {
-    method: "POST",
+  return request<{ data: Tenant }>('/tenants', {
+    method: 'POST',
     data: body,
   });
 }
 
 export function updateTenant(
   tenantId: string,
-  body: { name: string; companyName?: string; phone?: string; email: string }
+  body: { name: string; companyName?: string; phone?: string; email: string },
 ) {
   return request<{ data: Tenant }>(`/tenants/${tenantId}`, {
-    method: "PUT",
+    method: 'PUT',
     data: body,
   });
 }
 
 export function generateTenantBearerToken(tenantId: string) {
   return request<{ data: Tenant }>(`/tenants/${tenantId}/bearer-token`, {
-    method: "PUT",
+    method: 'PUT',
   });
 }
 
 export function deleteTenant(tenantId: string) {
   return request<{ data: null }>(`/tenants/${tenantId}`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 }
 
 // Salesforce Connect
 export function getSalesforceConnect(tenantId: string) {
-  return request<{ data: SalesforceConnect | null }>(
-    `/tenants/${tenantId}/salesforce-connect`
-  );
+  return request<{ data: SalesforceConnect | null }>(`/tenants/${tenantId}/salesforce-connect`);
 }
 
-export function saveSalesforceConnect(
-  tenantId: string,
-  body: Partial<SalesforceConnect>
-) {
-  return request<{ data: SalesforceConnect }>(
-    `/tenants/${tenantId}/salesforce-connect`,
-    { method: "PUT", data: body }
-  );
+export function saveSalesforceConnect(tenantId: string, body: Partial<SalesforceConnect>) {
+  return request<{ data: SalesforceConnect }>(`/tenants/${tenantId}/salesforce-connect`, {
+    method: 'PUT',
+    data: body,
+  });
 }
 
 export function deleteSalesforceConnect(tenantId: string) {
   return request<{ data: null }>(`/tenants/${tenantId}/salesforce-connect`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 }
 
 // WhatsApp Connect
 export function getWhatsappConnect(tenantId: string) {
-  return request<{ data: WhatsappConnect | null }>(
-    `/tenants/${tenantId}/whatsapp-connect`
-  );
+  return request<{ data: WhatsappConnect | null }>(`/tenants/${tenantId}/whatsapp-connect`);
 }
 
-export function saveWhatsappConnect(
-  tenantId: string,
-  body: Partial<WhatsappConnect>
-) {
-  return request<{ data: WhatsappConnect }>(
-    `/tenants/${tenantId}/whatsapp-connect`,
-    { method: "PUT", data: body }
-  );
+export function saveWhatsappConnect(tenantId: string, body: Partial<WhatsappConnect>) {
+  return request<{ data: WhatsappConnect }>(`/tenants/${tenantId}/whatsapp-connect`, {
+    method: 'PUT',
+    data: body,
+  });
 }
 
 export function deleteWhatsappConnect(tenantId: string) {
   return request<{ data: null }>(`/tenants/${tenantId}/whatsapp-connect`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 }
 
-export type ApiMappingType = "Account" | "Deals" | "ScheduleBooking";
+export type ApiMappingType = 'Account' | 'Deals' | 'ScheduleBooking';
 export type ConnectionRecord = {
   id: string;
   numberId?: string;
@@ -151,15 +141,21 @@ export type ConnectionRecord = {
   apiMappingType?: ApiMappingType;
   fieldMapping?: Record<string, unknown>;
 };
-export type ConnectionRecordKind = "whatsapp-connect/numbers" | "salesforce-connect/api-mappings";
+export type ConnectionRecordKind = 'whatsapp-connect/numbers' | 'salesforce-connect/api-mappings';
 export function listConnectionRecords(tenantId: string, kind: ConnectionRecordKind) {
   return request<{ data: ConnectionRecord[] }>(`/tenants/${tenantId}/${kind}`);
 }
-export function saveConnectionRecord(tenantId: string, kind: ConnectionRecordKind, body: Omit<ConnectionRecord, "id">, id?: string) {
-  return request<{ data: ConnectionRecord }>(`/tenants/${tenantId}/${kind}${id ? `/${id}` : ""}`, {
-    method: id ? "PUT" : "POST", data: body,
+export function saveConnectionRecord(
+  tenantId: string,
+  kind: ConnectionRecordKind,
+  body: Omit<ConnectionRecord, 'id'>,
+  id?: string,
+) {
+  return request<{ data: ConnectionRecord }>(`/tenants/${tenantId}/${kind}${id ? `/${id}` : ''}`, {
+    method: id ? 'PUT' : 'POST',
+    data: body,
   });
 }
 export function deleteConnectionRecord(tenantId: string, kind: ConnectionRecordKind, id: string) {
-  return request<{ data: null }>(`/tenants/${tenantId}/${kind}/${id}`, { method: "DELETE" });
+  return request<{ data: null }>(`/tenants/${tenantId}/${kind}/${id}`, { method: 'DELETE' });
 }

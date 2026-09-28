@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { ChevronRightIcon } from "lucide-react";
+import Link from 'next/link';
+import { ChevronRightIcon } from 'lucide-react';
 
 type TenantBreadcrumbProps = {
   tenantId: string;
@@ -7,18 +7,14 @@ type TenantBreadcrumbProps = {
   tenantLabel?: string;
 };
 
-export function TenantBreadcrumb({
-  tenantId,
-  currentPage,
-  tenantLabel,
-}: TenantBreadcrumbProps) {
+export function TenantBreadcrumb({ tenantId, currentPage, tenantLabel }: TenantBreadcrumbProps) {
   const detailLabel = tenantLabel?.trim() || `Tenant ${tenantId}`;
 
   return (
-    <nav aria-label="Breadcrumb" className="text-sm text-muted-foreground">
+    <nav aria-label="Breadcrumb" className="text-muted-foreground text-sm">
       <ol className="flex flex-wrap items-center gap-1">
         <li>
-          <Link className="transition-colors hover:text-foreground" href="/tenant">
+          <Link className="hover:text-foreground transition-colors" href="/tenant">
             Tenants
           </Link>
         </li>
@@ -26,17 +22,14 @@ export function TenantBreadcrumb({
           <ChevronRightIcon className="size-4" />
         </li>
         <li>
-          <Link
-            className="transition-colors hover:text-foreground"
-            href={`/tenant/${tenantId}`}
-          >
+          <Link className="hover:text-foreground transition-colors" href={`/tenant/${tenantId}`}>
             {detailLabel}
           </Link>
         </li>
         <li aria-hidden="true" className="flex items-center">
           <ChevronRightIcon className="size-4" />
         </li>
-        <li aria-current="page" className="font-medium text-foreground">
+        <li aria-current="page" className="text-foreground font-medium">
           {currentPage}
         </li>
       </ol>

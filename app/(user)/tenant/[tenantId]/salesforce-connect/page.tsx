@@ -1,26 +1,17 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { ConnectionRecords } from "@/components/connection-records";
-import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { ConnectionRecords } from '@/components/connection-records';
+import { PlusIcon } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Toast, ToastState } from "@/components/notification-toast";
-import { TenantBreadcrumb } from "@/components/tenant-breadcrumb";
-import {
-  getSalesforceConnect,
-  saveSalesforceConnect,
-  deleteSalesforceConnect,
-} from "@/lib/api";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Toast, ToastState } from '@/components/notification-toast';
+import { TenantBreadcrumb } from '@/components/tenant-breadcrumb';
+import { getSalesforceConnect, saveSalesforceConnect, deleteSalesforceConnect } from '@/lib/api';
 
 type FormState = {
   salesforceLoginUrl: string;
@@ -34,14 +25,14 @@ type FormState = {
 };
 
 const emptyForm: FormState = {
-  salesforceLoginUrl: "",
-  salesforceApiUrl: "",
-  instanceUrl: "",
-  clientId: "",
-  clientSecret: "",
-  username: "",
-  password: "",
-  grantType: "",
+  salesforceLoginUrl: '',
+  salesforceApiUrl: '',
+  instanceUrl: '',
+  clientId: '',
+  clientSecret: '',
+  username: '',
+  password: '',
+  grantType: '',
 };
 
 export default function SalesforceConnectPage() {
@@ -61,14 +52,14 @@ export default function SalesforceConnectPage() {
       .then((res) => {
         if (res.data) {
           setForm({
-            salesforceLoginUrl: res.data.salesforceLoginUrl ?? "",
-            salesforceApiUrl: res.data.salesforceApiUrl ?? "",
-            instanceUrl: res.data.instanceUrl ?? "",
-            clientId: res.data.clientId ?? "",
-            clientSecret: res.data.clientSecret ?? "",
-            username: res.data.username ?? "",
-            password: res.data.password ?? "",
-            grantType: res.data.grantType ?? "",
+            salesforceLoginUrl: res.data.salesforceLoginUrl ?? '',
+            salesforceApiUrl: res.data.salesforceApiUrl ?? '',
+            instanceUrl: res.data.instanceUrl ?? '',
+            clientId: res.data.clientId ?? '',
+            clientSecret: res.data.clientSecret ?? '',
+            username: res.data.username ?? '',
+            password: res.data.password ?? '',
+            grantType: res.data.grantType ?? '',
           });
           setHasData(true);
         }
@@ -105,21 +96,16 @@ export default function SalesforceConnectPage() {
       setShowForm(false);
 
       setToast({
-        message: isAdding
-          ? "Salesforce connect added"
-          : "Salesforce connect updated",
-        type: "success",
+        message: isAdding ? 'Salesforce connect added' : 'Salesforce connect updated',
+        type: 'success',
       });
 
       setSaving(false);
       setDeleting(false);
     } catch (err) {
       setToast({
-        message:
-          err instanceof Error
-            ? err.message
-            : "Failed to save Salesforce connect",
-        type: "error",
+        message: err instanceof Error ? err.message : 'Failed to save Salesforce connect',
+        type: 'error',
       });
       setSaving(false);
     }
@@ -127,7 +113,7 @@ export default function SalesforceConnectPage() {
 
   async function handleDelete() {
     const confirmed = window.confirm(
-      "Do you want to delete Salesforce connect? This action cannot be undone."
+      'Do you want to delete Salesforce connect? This action cannot be undone.',
     );
 
     if (!confirmed) return;
@@ -141,30 +127,23 @@ export default function SalesforceConnectPage() {
       setForm(emptyForm);
 
       setToast({
-        message: "Salesforce connect deleted",
-        type: "success",
+        message: 'Salesforce connect deleted',
+        type: 'success',
       });
 
       setSaving(false);
       setDeleting(false);
     } catch (err) {
       setToast({
-        message:
-          err instanceof Error
-            ? err.message
-            : "Failed to delete Salesforce connect",
-        type: "error",
+        message: err instanceof Error ? err.message : 'Failed to delete Salesforce connect',
+        type: 'error',
       });
       setDeleting(false);
     }
   }
 
   if (!loaded) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Loading...
-      </p>
-    );
+    return <p className="text-muted-foreground text-sm">Loading...</p>;
   }
 
   const fields: {
@@ -172,27 +151,22 @@ export default function SalesforceConnectPage() {
     label: string;
     type?: string;
   }[] = [
-    { key: "salesforceLoginUrl", label: "Salesforce Login URL" },
-    { key: "salesforceApiUrl", label: "Salesforce API URL" },
-    { key: "instanceUrl", label: "Instance URL" },
-    { key: "clientId", label: "Client ID" },
-    { key: "clientSecret", label: "Client Secret", type: "password" },
-    { key: "username", label: "Username" },
-    { key: "password", label: "Password", type: "password" },
-    { key: "grantType", label: "Grant Type" },
+    { key: 'salesforceLoginUrl', label: 'Salesforce Login URL' },
+    { key: 'salesforceApiUrl', label: 'Salesforce API URL' },
+    { key: 'instanceUrl', label: 'Instance URL' },
+    { key: 'clientId', label: 'Client ID' },
+    { key: 'clientSecret', label: 'Client Secret', type: 'password' },
+    { key: 'username', label: 'Username' },
+    { key: 'password', label: 'Password', type: 'password' },
+    { key: 'grantType', label: 'Grant Type' },
   ];
 
   return (
     <div className="flex flex-col gap-4">
-      <TenantBreadcrumb
-        currentPage="Salesforce Connect"
-        tenantId={tenantId}
-      />
+      <TenantBreadcrumb currentPage="Salesforce Connect" tenantId={tenantId} />
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">
-          Salesforce Connect
-        </h1>
+        <h1 className="text-2xl font-semibold">Salesforce Connect</h1>
 
         {!showForm && !hasData && (
           <Button onClick={handleAdd}>
@@ -207,9 +181,9 @@ export default function SalesforceConnectPage() {
           <CardTitle>
             {showForm
               ? isAdding
-                ? "Add Salesforce Connect"
-                : "Edit Salesforce Connect"
-              : "Salesforce Connect"}
+                ? 'Add Salesforce Connect'
+                : 'Edit Salesforce Connect'
+              : 'Salesforce Connect'}
           </CardTitle>
         </CardHeader>
 
@@ -217,38 +191,25 @@ export default function SalesforceConnectPage() {
           {!showForm && hasData && (
             <div className="flex gap-2">
               <Button onClick={handleEdit}>Edit</Button>
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={deleting}
-              >
-                {deleting ? "Deleting..." : "Delete"}
+              <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                {deleting ? 'Deleting...' : 'Delete'}
               </Button>
             </div>
           )}
 
           {!showForm && !hasData && (
-            <p className="text-sm text-muted-foreground">
-              No Salesforce connection configured.
-            </p>
+            <p className="text-muted-foreground text-sm">No Salesforce connection configured.</p>
           )}
 
           {showForm && (
-            <form
-              onSubmit={handleSave}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleSave} className="flex flex-col gap-4">
               {fields.map((field) => (
                 <div key={field.key}>
-                  <Label className="mb-2">
-                    {field.label}
-                  </Label>
+                  <Label className="mb-2">{field.label}</Label>
                   <Input
-                    type={field.type ?? "text"}
+                    type={field.type ?? 'text'}
                     value={form[field.key]}
-                    onChange={(e) =>
-                      handleChange(field.key, e.target.value)
-                    }
+                    onChange={(e) => handleChange(field.key, e.target.value)}
                     required
                   />
                 </div>
@@ -256,11 +217,7 @@ export default function SalesforceConnectPage() {
 
               <div className="flex gap-2">
                 <Button type="submit" disabled={saving}>
-                  {saving
-                    ? "Saving..."
-                    : isAdding
-                      ? "Add"
-                      : "Update"}
+                  {saving ? 'Saving...' : isAdding ? 'Add' : 'Update'}
                 </Button>
 
                 <Button
@@ -277,12 +234,15 @@ export default function SalesforceConnectPage() {
         </CardContent>
       </Card>
 
-      {hasData && <ConnectionRecords key={tenantId} tenantId={tenantId} kind="salesforce-connect/api-mappings" />}
+      {hasData && (
+        <ConnectionRecords
+          key={tenantId}
+          tenantId={tenantId}
+          kind="salesforce-connect/api-mappings"
+        />
+      )}
 
-      <Toast
-        toast={toast}
-        onClose={() => setToast(null)}
-      />
+      <Toast toast={toast} onClose={() => setToast(null)} />
     </div>
   );
 }

@@ -1,11 +1,7 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from 'react';
 
-import { UserSidebar } from "@/components/userSidebar"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import { UserSidebar } from '@/components/userSidebar';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 export default function UserLayout({ children }: { children: ReactNode }) {
   return (
@@ -18,5 +14,5 @@ export default function UserLayout({ children }: { children: ReactNode }) {
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
     </SidebarProvider>
-  )
+  );
 }
